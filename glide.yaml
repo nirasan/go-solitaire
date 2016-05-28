@@ -2,3 +2,6 @@ package: github.com/nirasan/solitaire
 import:
 - package: github.com/nsf/termbox-go
 - package: github.com/mattn/go-runewidth
+- package: github.com/stretchr/testify
+  subpackages:
+  - assert

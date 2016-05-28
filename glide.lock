@@ -1,8 +1,12 @@
-hash: f76677fd5f6c97e34675978142792f522a205bb3d958ca037243bd04ab6a577d
-updated: 2016-05-27T11:00:02.408908984+09:00
+hash: b78c7651b41dee04f7b34a3c75813c422c5024e7e595506935d5c326f424cb80
+updated: 2016-05-27T14:46:07.914521141+09:00
 imports:
 - name: github.com/mattn/go-runewidth
   version: d6bea18f789704b5f83375793155289da36a3c7f
 - name: github.com/nsf/termbox-go
   version: 362329b0aa6447eadd52edd8d660ec1dff470295
+- name: github.com/stretchr/testify
+  version: 8d64eb7173c7753d6419fd4a9caf057398611364
+  subpackages:
+  - assert
 devImports: []
