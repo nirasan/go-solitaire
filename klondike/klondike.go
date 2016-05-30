@@ -2,6 +2,7 @@ package klondike
 
 import (
 	"fmt"
+	"log"
 	"math"
 	"math/rand"
 	"strings"
@@ -104,7 +105,16 @@ func (k *Klondike) PickCard() *Card {
 }
 
 func (k *Klondike) Select() {
-	k.selected = &Position{k.cursor.Col, k.cursor.Row}
+	// 未選択
+	if k.selected == nil {
+		k.selected = &Position{k.cursor.Col, k.cursor.Row}
+		return
+	}
+	// 選択済み
+	err := k.Move()
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func (k *Klondike) CursorLeft() {
@@ -161,4 +171,11 @@ func (k *Klondike) CursorDown() {
 			}
 		}
 	}
+}
+
+func (k *Klondike) GetCard(p *Position) *Card {
+	if len(k.table[p.Row]) <= 0 {
+		return nil
+	}
+	return k.table[p.Row][p.Col]
 }

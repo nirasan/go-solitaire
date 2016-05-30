@@ -62,6 +62,9 @@ func (c *Card) String() string {
 }
 
 func (c *Card) CanPutInTableau(target *Card) bool {
+	if target == nil {
+		return c.Num == 13
+	}
 	if !c.Suit.IsDifferentColor(target.Suit) {
 		return false
 	}
