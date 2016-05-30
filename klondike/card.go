@@ -16,10 +16,10 @@ const (
 )
 
 var suitLabel = map[Suit]string{
-	Hearts: "H",
+	Hearts:   "H",
 	Diamonds: "D",
-	Clubs: "C",
-	Spades: "S",
+	Clubs:    "C",
+	Spades:   "S",
 }
 
 func (s Suit) String() string {

@@ -1,11 +1,11 @@
 package klondike
 
 import (
-	"math/rand"
-	"time"
-	"strings"
 	"fmt"
 	"math"
+	"math/rand"
+	"strings"
+	"time"
 )
 
 type Klondike struct {
@@ -39,10 +39,10 @@ const (
 func NewKlondike() *Klondike {
 	rand.Seed(time.Now().UnixNano())
 	return &Klondike{
-		deck:      CreateDeck(),
-		table: make([]Cards, cardsListMax, cardsListMax),
-		cursor:    &Position{0, 0},
-		selected:  nil,
+		deck:     CreateDeck(),
+		table:    make([]Cards, cardsListMax, cardsListMax),
+		cursor:   &Position{0, 0},
+		selected: nil,
 	}
 }
 
@@ -93,7 +93,7 @@ func (k *Klondike) Init() {
 }
 
 func (k *Klondike) LastCol(i int) int {
-	return int(math.Max(float64(len(k.table[i]) - 1), 0))
+	return int(math.Max(float64(len(k.table[i])-1), 0))
 }
 
 func (k *Klondike) PickCard() *Card {
@@ -125,3 +125,40 @@ func (k *Klondike) CursorRight() {
 	k.cursor.Row, k.cursor.Col = row, col
 }
 
+func (k *Klondike) CursorUp() {
+	row := k.cursor.Row
+	col := k.cursor.Col
+	if stock <= row && row <= foundation4 {
+		k.CursorLeft()
+	} else {
+		if col > 0 && k.table[row][col-1].Open {
+			k.cursor.Col = col - 1
+		} else {
+			k.CursorLeft()
+		}
+	}
+}
+
+func (k *Klondike) CursorDown() {
+	row := k.cursor.Row
+	col := k.cursor.Col
+	if stock <= row && row <= foundation4 {
+		k.CursorRight()
+	} else {
+		if col < k.LastCol(row) && k.table[row][col+1].Open {
+			k.cursor.Col = col + 1
+		} else {
+			if row == column7 {
+				k.CursorRight()
+			} else {
+				for i, c := range k.table[row+1] {
+					if c.Open {
+						k.cursor.Row = row + 1
+						k.cursor.Col = i
+						return
+					}
+				}
+			}
+		}
+	}
+}
