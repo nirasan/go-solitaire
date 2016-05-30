@@ -36,13 +36,13 @@ func TestCard_CanPutInTableau(t *testing.T) {
 		{8, Spades, 1, Spades, false},
 	}
 	for _, s := range samples {
-		c1, c2 := &Card{s.Num1, s.Suit1}, &Card{s.Num2, s.Suit2}
+		c1, c2 := NewCard(s.Num1, s.Suit1), NewCard(s.Num2, s.Suit2)
 		assert.Equal(t, c1.CanPutInTableau(c2), s.Bool, fmt.Sprintf("test failed: %v", s))
 	}
 }
 
 func TestCard_CanPutInFoundation(t *testing.T) {
-	c := &Card{1, Hearts}
+	c := NewCard(1, Hearts)
 	assert.True(t, c.CanPutInFoundation(nil), "カードがなければAを設置できる")
 	c.Num = 13
 	assert.False(t, c.CanPutInFoundation(nil), "カードがなければA以外を設置できない")
@@ -59,7 +59,7 @@ func TestCard_CanPutInFoundation(t *testing.T) {
 		{2, Diamonds, 1, Hearts, false}, {13, Clubs, 12, Spades, false},
 	}
 	for _, s := range samples {
-		c1, c2 := &Card{s.Num1, s.Suit1}, &Card{s.Num2, s.Suit2}
+		c1, c2 := NewCard(s.Num1, s.Suit1), NewCard(s.Num2, s.Suit2)
 		assert.Equal(t, c1.CanPutInFoundation(c2), s.Bool, fmt.Sprintf("test failed: %v", s))
 	}
 }

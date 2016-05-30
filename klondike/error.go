@@ -2,6 +2,6 @@ package klondike
 
 import "errors"
 
-const (
+var (
 	InvalidArgs = errors.New("invalid args")
 )

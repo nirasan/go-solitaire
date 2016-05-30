@@ -1,5 +1,15 @@
 package klondike
 
+
+type Stock []*Card
+
+type Waste []*Card
+
+type Column []*Card
+
+type Foundation []*Card
+
+
 func Move(from, to interface{}, index int) error {
 	switch from := from.(type) {
 	case *Stock:
