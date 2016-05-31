@@ -14,13 +14,13 @@ func drawStringDefault(x, y int, s string) {
 
 func highlightColor(x, y, length int) {
 	width, _ := termbox.Size()
-	start := width*y + x*4
+	start := width*y + x
 	for i := 0; i < length; i++ {
 		cell := termbox.CellBuffer()[start+i]
 		if cell.Fg == termbox.ColorDefault && cell.Bg == termbox.ColorDefault {
-			termbox.SetCell(x*4+i, y, cell.Ch, termbox.ColorBlack, termbox.ColorWhite)
+			termbox.SetCell(x+i, y, cell.Ch, termbox.ColorBlack, termbox.ColorWhite)
 		} else {
-			termbox.SetCell(x*4+i, y, cell.Ch, cell.Bg, cell.Fg)
+			termbox.SetCell(x+i, y, cell.Ch, cell.Bg, cell.Fg)
 		}
 	}
 }

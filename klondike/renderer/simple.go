@@ -9,16 +9,24 @@ import (
 type SimpleRenderer struct {
 	k         *klondike.Klondike
 	colorFlag bool
+	err       error
 }
 
-var (
-	err        error
+const (
 	colorRed   = termbox.Attribute(10)
 	colorBlack = termbox.Attribute(243)
 )
 
 func NewSimpleRenderer(k *klondike.Klondike, c bool) *SimpleRenderer {
-	return &SimpleRenderer{k, c}
+	return &SimpleRenderer{k, c, nil}
+}
+
+func (r *SimpleRenderer) SetError(e error) {
+	r.err = e
+}
+
+func (r *SimpleRenderer) pos(x, y int) (int, int) {
+	return x * 4, y
 }
 
 func (r *SimpleRenderer) Render() {
@@ -27,8 +35,7 @@ func (r *SimpleRenderer) Render() {
 	// カード
 	for i, row := range r.k.Table {
 		for j, card := range row {
-			y := i
-			x := j * 4
+			x, y := r.pos(j, i)
 			if card == nil {
 				continue
 			}
@@ -43,12 +50,13 @@ func (r *SimpleRenderer) Render() {
 	termbox.SetCursor(r.k.Cursor.Col*4, r.k.Cursor.Row)
 	// ハイライト
 	if r.k.Selected != nil {
-		highlightColor(r.k.Selected.Col, r.k.Selected.Row, 3)
+		x, y := r.pos(r.k.Selected.Col, r.k.Selected.Row)
+		highlightColor(x, y, 3)
 	}
 	// エラー
-	if err != nil {
-		drawStringDefault(0, len(r.k.Table), err.Error())
-		err = nil
+	if r.err != nil {
+		drawStringDefault(0, len(r.k.Table), r.err.Error())
+		r.err = nil
 	}
 	// デバッグ
 	debugStrings := strings.Split(r.k.String(), "\n")

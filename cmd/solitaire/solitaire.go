@@ -10,6 +10,7 @@ import (
 
 type Renderer interface {
 	Render()
+	SetError(error)
 }
 
 var (
@@ -59,7 +60,7 @@ func pollEvent() {
 	kb.Bind(func() { k.CursorLeft(); draw() }, "left", "h")
 	kb.Bind(func() { k.CursorRight(); draw() }, "right", "l")
 	kb.Bind(func() { k.CursorJump(); draw() }, "tab")
-	kb.Bind(func() { k.Select(); draw() }, "space")
+	kb.Bind(func() { r.SetError(k.Select()); draw() }, "space")
 
 	for running {
 		kb.Poll(termbox.PollEvent())
