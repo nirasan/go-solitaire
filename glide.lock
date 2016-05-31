@@ -1,10 +1,14 @@
-hash: b78c7651b41dee04f7b34a3c75813c422c5024e7e595506935d5c326f424cb80
-updated: 2016-05-27T14:46:07.914521141+09:00
+hash: fd7e047ab4a7beb571c316bf3c4fcff48695a57d203e7ddd7c41e37f5ce9ba3e
+updated: 2016-05-31T12:34:27.538224318+09:00
 imports:
+- name: github.com/jteeuwen/keyboard
+  version: 8cc45fa1ae68ededaa9b648820b452c0695d3d05
+  subpackages:
+  - termbox
 - name: github.com/mattn/go-runewidth
   version: d6bea18f789704b5f83375793155289da36a3c7f
 - name: github.com/nsf/termbox-go
-  version: 362329b0aa6447eadd52edd8d660ec1dff470295
+  version: e885fe590b4c0cf84b58fc47dac8573f752351ae
 - name: github.com/stretchr/testify
   version: 8d64eb7173c7753d6419fd4a9caf057398611364
   subpackages:

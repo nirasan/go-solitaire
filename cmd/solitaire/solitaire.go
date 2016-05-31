@@ -1,10 +1,11 @@
 package main
 
 import (
+	"flag"
+	keyboard "github.com/jteeuwen/keyboard/termbox"
 	"github.com/nirasan/solitaire/klondike"
 	"github.com/nsf/termbox-go"
 	"strings"
-	"flag"
 )
 
 var k *klondike.Klondike
@@ -89,35 +90,26 @@ func drawStringDefault(x, y int, s string) {
 
 func changeColor(x, y, length int, fg, bg termbox.Attribute) {
 	width, _ := termbox.Size()
-	start := width * y + x * 4
+	start := width*y + x*4
 	for i := 0; i < length; i++ {
 		cell := termbox.CellBuffer()[start+i]
-		termbox.SetCell(x * 4 + i, y, cell.Ch, fg, bg)
+		termbox.SetCell(x*4+i, y, cell.Ch, fg, bg)
 	}
 }
 
 func pollEvent() {
-Loop:
-	for {
-		switch ev := termbox.PollEvent(); ev.Type {
-		case termbox.EventKey:
-			switch ev.Key {
-			case termbox.KeyEsc:
-				break Loop
-			case termbox.KeyEnter, termbox.KeySpace:
-				err = k.Select()
-			case termbox.KeyArrowUp:
-				k.CursorUp()
-			case termbox.KeyArrowDown:
-				k.CursorDown()
-			case termbox.KeyArrowLeft:
-				k.CursorLeft()
-			case termbox.KeyArrowRight:
-				k.CursorRight()
-			case termbox.KeyTab:
-				k.CursorJump()
-			}
-			draw()
-		}
+	running := true
+
+	kb := keyboard.New()
+	kb.Bind(func() { running = false }, "escape")
+	kb.Bind(func() { k.CursorUp(); draw() }, "up", "k")
+	kb.Bind(func() { k.CursorDown(); draw() }, "down", "j")
+	kb.Bind(func() { k.CursorLeft(); draw() }, "left", "h")
+	kb.Bind(func() { k.CursorRight(); draw() }, "right", "l")
+	kb.Bind(func() { k.CursorJump(); draw() }, "tab")
+	kb.Bind(func() { k.Select(); draw() }, "space")
+
+	for running {
+		kb.Poll(termbox.PollEvent())
 	}
 }
