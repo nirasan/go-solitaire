@@ -15,7 +15,7 @@ type Renderer interface {
 var (
 	k              *klondike.Klondike
 	colorFlag      = flag.Bool("color", true, "draw color charactor")
-	rendererString = flag.String("renderer", "simple", "termbox renderer")
+	rendererString = flag.String("renderer", "basic", "termbox renderer")
 	r              Renderer
 )
 
@@ -34,6 +34,8 @@ func main() {
 	k.Init()
 
 	switch *rendererString {
+	case "basic":
+		r = renderer.NewBasicRenderer(k, *colorFlag)
 	case "simple":
 		r = renderer.NewSimpleRenderer(k, *colorFlag)
 	}

@@ -3,25 +3,18 @@ package renderer
 import (
 	"github.com/nirasan/solitaire/klondike"
 	"github.com/nsf/termbox-go"
-	"strings"
 )
 
-type SimpleRenderer struct {
+type BasicRenderer struct {
 	k         *klondike.Klondike
 	colorFlag bool
 }
 
-var (
-	err        error
-	colorRed   = termbox.Attribute(10)
-	colorBlack = termbox.Attribute(243)
-)
-
-func NewSimpleRenderer(k *klondike.Klondike, c bool) *SimpleRenderer {
-	return &SimpleRenderer{k, c}
+func NewBasicRenderer(k *klondike.Klondike, c bool) *BasicRenderer {
+	return &BasicRenderer{k, c}
 }
 
-func (r *SimpleRenderer) Render() {
+func (r *BasicRenderer) Render() {
 	termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
 
 	// カード
@@ -50,17 +43,11 @@ func (r *SimpleRenderer) Render() {
 		drawStringDefault(0, len(r.k.Table), err.Error())
 		err = nil
 	}
-	// デバッグ
-	debugStrings := strings.Split(r.k.String(), "\n")
-	debugRow := len(r.k.Table) + 1
-	for i, s := range debugStrings {
-		drawStringDefault(0, debugRow+i, s)
-	}
 
 	termbox.Flush()
 }
 
-func (r *SimpleRenderer) drawCard(x, y int, suit, num string) {
+func (r *BasicRenderer) drawCard(x, y int, suit, num string) {
 	fg := colorBlack
 	if r.colorFlag && (suit == "H" || suit == "D") {
 		fg = colorRed
