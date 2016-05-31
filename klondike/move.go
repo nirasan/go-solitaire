@@ -2,7 +2,6 @@ package klondike
 
 import (
 	"errors"
-	"log"
 )
 
 var (
@@ -17,35 +16,33 @@ var (
 )
 
 func (k *Klondike) Move() error {
-	fromRow, fromCol := k.selected.Row, k.selected.Col
-	toRow, toCol := k.cursor.Row, k.cursor.Col
-	fromCard, toCard := k.table[fromRow][fromCol], k.table[toRow][toCol]
-	log.Println("START MOVE: ", k.selected, k.cursor, fromCard, toCard)
+	fromRow, toRow := k.Selected.Row, k.Cursor.Row
+	err := InvalidMovement
 
 	switch {
-	case isStock(fromRow) && isStock(toRow) && len(k.table[stock]) > 0:
+	case isStock(fromRow) && isStock(toRow) && len(k.Table[stock]) > 0:
 		// 山札をめくる
-		return k.Draw()
-	case isStock(fromRow) && isStock(toRow) && len(k.table[stock]) <= 0:
+		err = k.Draw()
+	case isStock(fromRow) && isStock(toRow) && len(k.Table[stock]) <= 0:
 		// 捨て札を山札に
-		return k.WasteToStock()
+		err = k.WasteToStock()
 	case isWaste(fromRow) && isFoundation(toRow):
 		// 捨て札を組み札に
-		return k.MoveToFoundation(k.selected, k.cursor)
+		err = k.MoveToFoundation(k.Selected, k.Cursor)
 	case isWaste(fromRow) && isColumn(toRow):
 		// 捨て札を場札に
-		return k.MoveToColumn(k.selected, k.cursor)
+		err = k.MoveToColumn(k.Selected, k.Cursor)
 	case isColumn(fromRow) && isColumn(toRow):
 		// 場札から場札に
-		return k.MoveToColumn(k.selected, k.cursor)
+		err = k.MoveToColumn(k.Selected, k.Cursor)
 	case isColumn(fromRow) && isFoundation(toRow):
 		// 場札から組み札に
-		return k.MoveToFoundation(k.selected, k.cursor)
+		err = k.MoveToFoundation(k.Selected, k.Cursor)
 	}
 
-	k.selected = nil
+	k.Selected = nil
 
-	return InvalidMovement
+	return err
 }
 
 func isStock(i int) bool {
@@ -65,22 +62,25 @@ func isColumn(i int) bool {
 }
 
 func (k *Klondike) Draw() error {
-	if len(k.table[stock]) <= 0 {
+	if len(k.Table[stock]) <= 0 {
 		return StockIsEmpty
 	}
-	last := len(k.table[stock]) - 1
-	k.table[stock][last].Open = true
-	k.table[waste] = append(k.table[waste], k.table[stock][last])
-	k.table[stock] = k.table[stock][:last]
+	last := len(k.Table[stock]) - 1
+	k.Table[stock][last].Open = true
+	k.Table[waste] = append(k.Table[waste], k.Table[stock][last])
+	k.Table[stock] = k.Table[stock][:last]
+	if last > 0 {
+		k.Cursor.Col = last - 1
+	}
 	return nil
 }
 
 func (k *Klondike) WasteToStock() error {
-	if len(k.table[stock]) > 0 {
+	if len(k.Table[stock]) > 0 {
 		return StockIsNotEmpty
 	}
-	k.table[stock], k.table[waste] = k.table[waste], k.table[stock]
-	for _, c := range k.table[stock] {
+	k.Table[stock], k.Table[waste] = k.Table[waste], k.Table[stock]
+	for _, c := range k.Table[stock] {
 		c.Open = false
 	}
 	return nil
@@ -110,11 +110,11 @@ func (k *Klondike) MoveToFoundation(from, to *Position) error {
 		return CanNotPutInFoundation
 	}
 	// 移動実行
-	k.table[to.Row] = append(k.table[to.Row], fromCard)
-	k.table[from.Row] = k.table[from.Row][:from.Col]
+	k.Table[to.Row] = append(k.Table[to.Row], fromCard)
+	k.Table[from.Row] = k.Table[from.Row][:from.Col]
 	// オープン
-	if len(k.table[from.Row]) > 0 {
-		k.table[from.Row][from.Col-1].Open = true
+	if len(k.Table[from.Row]) > 0 {
+		k.Table[from.Row][from.Col-1].Open = true
 	}
 	return nil
 }
@@ -151,11 +151,11 @@ func (k *Klondike) MoveToColumn(from, to *Position) error {
 		return CanNotPutInTableau
 	}
 	// 移動実行
-	k.table[to.Row] = append(k.table[to.Row], k.table[from.Row][from.Col:]...)
-	k.table[from.Row] = k.table[from.Row][:from.Col]
+	k.Table[to.Row] = append(k.Table[to.Row], k.Table[from.Row][from.Col:]...)
+	k.Table[from.Row] = k.Table[from.Row][:from.Col]
 	// オープン
-	if len(k.table[from.Row]) > 0 {
-		k.table[from.Row][from.Col-1].Open = true
+	if len(k.Table[from.Row]) > 0 {
+		k.Table[from.Row][from.Col-1].Open = true
 	}
 	return nil
 }

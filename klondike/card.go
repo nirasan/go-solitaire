@@ -50,15 +50,19 @@ func NewCard(n uint8, s Suit) *Card {
 }
 
 func (c *Card) String() string {
-	s := strconv.Itoa(int(c.Num))
-	if v, ok := numberLabel[c.Num]; ok {
-		s = v
-	}
 	f := "(%s:%s)"
 	if c.Open {
 		f = "[%s:%s]"
 	}
-	return fmt.Sprintf(f, c.Suit.String(), s)
+	return fmt.Sprintf(f, c.Suit.String(), c.NumString())
+}
+
+func (c *Card) NumString() string {
+	s := strconv.Itoa(int(c.Num))
+	if v, ok := numberLabel[c.Num]; ok {
+		s = v
+	}
+	return s
 }
 
 func (c *Card) CanPutInTableau(target *Card) bool {
