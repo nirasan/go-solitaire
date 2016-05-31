@@ -1,16 +1,19 @@
 package main
 
 import (
-	"fmt"
 	"github.com/nirasan/solitaire/klondike"
 	"github.com/nsf/termbox-go"
 	"strings"
+	"flag"
 )
 
 var k *klondike.Klondike
 var err error
+var color = flag.Bool("color", true, "draw color charactor")
 
 func main() {
+	flag.Parse()
+
 	err := termbox.Init()
 	if err != nil {
 		panic(err)
@@ -37,7 +40,8 @@ func draw() {
 				continue
 			}
 			if card.Open {
-				drawStringDefault(x, y, fmt.Sprintf("%s%2d", card.Suit.String(), card.Num))
+				drawCard(x, y, card.Suit.String(), card.NumString())
+				//drawStringDefault(x, y, fmt.Sprintf("%s%2d", card.Suit.String(), card.Num))
 			} else {
 				drawStringDefault(x, y, "===")
 			}
@@ -62,6 +66,15 @@ func draw() {
 	}
 
 	termbox.Flush()
+}
+
+func drawCard(x, y int, suit, num string) {
+	fg := termbox.ColorDefault
+	if *color && (suit == "H" || suit == "D") {
+		fg = termbox.ColorRed
+	}
+	drawString(x, y, suit, fg, termbox.ColorDefault)
+	drawString(x+1, y, num, termbox.ColorDefault, termbox.ColorDefault)
 }
 
 func drawString(x, y int, s string, fg, bg termbox.Attribute) {
