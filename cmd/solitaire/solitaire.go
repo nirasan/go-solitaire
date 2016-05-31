@@ -8,9 +8,13 @@ import (
 	"strings"
 )
 
-var k *klondike.Klondike
-var err error
-var color = flag.Bool("color", true, "draw color charactor")
+var (
+	k          *klondike.Klondike
+	err        error
+	colorFlag  = flag.Bool("color", true, "draw color charactor")
+	colorRed   = termbox.Attribute(10)
+	colorBlack = termbox.Attribute(243)
+)
 
 func main() {
 	flag.Parse()
@@ -20,6 +24,8 @@ func main() {
 		panic(err)
 	}
 	defer termbox.Close()
+
+	termbox.SetOutputMode(termbox.Output256)
 
 	k = klondike.NewKlondike()
 	k.Init()
@@ -42,7 +48,6 @@ func draw() {
 			}
 			if card.Open {
 				drawCard(x, y, card.Suit.String(), card.NumString())
-				//drawStringDefault(x, y, fmt.Sprintf("%s%2d", card.Suit.String(), card.Num))
 			} else {
 				drawStringDefault(x, y, "===")
 			}
@@ -52,7 +57,7 @@ func draw() {
 	termbox.SetCursor(k.Cursor.Col*4, k.Cursor.Row)
 	// ハイライト
 	if k.Selected != nil {
-		changeColor(k.Selected.Col, k.Selected.Row, 3, termbox.ColorBlack, termbox.ColorWhite)
+		toggleColor(k.Selected.Col, k.Selected.Row, 3)
 	}
 	// エラー
 	if err != nil {
@@ -70,12 +75,11 @@ func draw() {
 }
 
 func drawCard(x, y int, suit, num string) {
-	fg := termbox.ColorDefault
-	if *color && (suit == "H" || suit == "D") {
-		fg = termbox.ColorRed
+	fg := colorBlack
+	if *colorFlag && (suit == "H" || suit == "D") {
+		fg = colorRed
 	}
-	drawString(x, y, suit, fg, termbox.ColorDefault)
-	drawString(x+1, y, num, termbox.ColorDefault, termbox.ColorDefault)
+	drawString(x, y, suit+num, fg, termbox.ColorDefault)
 }
 
 func drawString(x, y int, s string, fg, bg termbox.Attribute) {
@@ -88,12 +92,12 @@ func drawStringDefault(x, y int, s string) {
 	drawString(x, y, s, termbox.ColorDefault, termbox.ColorDefault)
 }
 
-func changeColor(x, y, length int, fg, bg termbox.Attribute) {
+func toggleColor(x, y, length int) {
 	width, _ := termbox.Size()
 	start := width*y + x*4
 	for i := 0; i < length; i++ {
 		cell := termbox.CellBuffer()[start+i]
-		termbox.SetCell(x*4+i, y, cell.Ch, fg, bg)
+		termbox.SetCell(x*4+i, y, cell.Ch, cell.Bg, cell.Fg)
 	}
 }
 
@@ -101,7 +105,7 @@ func pollEvent() {
 	running := true
 
 	kb := keyboard.New()
-	kb.Bind(func() { running = false }, "escape")
+	kb.Bind(func() { running = false }, "escape", "q")
 	kb.Bind(func() { k.CursorUp(); draw() }, "up", "k")
 	kb.Bind(func() { k.CursorDown(); draw() }, "down", "j")
 	kb.Bind(func() { k.CursorLeft(); draw() }, "left", "h")
