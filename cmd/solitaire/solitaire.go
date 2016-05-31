@@ -47,7 +47,7 @@ func draw() {
 	termbox.SetCursor(k.Cursor.Col*4, k.Cursor.Row)
 	// ハイライト
 	if k.Selected != nil {
-		changeColor(k.Selected.Col, k.Selected.Row, 3, termbox.ColorDefault, termbox.ColorWhite)
+		changeColor(k.Selected.Col, k.Selected.Row, 3, termbox.ColorBlack, termbox.ColorWhite)
 	}
 	// エラー
 	if err != nil {
@@ -76,10 +76,10 @@ func drawStringDefault(x, y int, s string) {
 
 func changeColor(x, y, length int, fg, bg termbox.Attribute) {
 	width, _ := termbox.Size()
-	start := width*y + x*4
+	start := width * y + x * 4
 	for i := 0; i < length; i++ {
 		cell := termbox.CellBuffer()[start+i]
-		cell.Fg, cell.Bg = fg, bg
+		termbox.SetCell(x * 4 + i, y, cell.Ch, fg, bg)
 	}
 }
 
