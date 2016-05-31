@@ -181,9 +181,41 @@ func (k *Klondike) CursorDown() {
 	}
 }
 
+func (k *Klondike) CursorJump() {
+	switch {
+	case isStock(k.Cursor.Row):
+		k.Cursor.Row = waste
+		k.Cursor.Col = k.LastCol(waste)
+	case isWaste(k.Cursor.Row):
+		k.Cursor.Row = foundation1
+		k.Cursor.Col = k.LastCol(foundation1)
+	case isFoundation(k.Cursor.Row):
+		k.Cursor.Row = column1
+		k.Cursor.Col = k.LastCol(column1)
+	case isColumn(k.Cursor.Row):
+		k.Cursor.Row = stock
+		k.Cursor.Col = k.LastCol(stock)
+	}
+}
+
+func (k *Klondike) CursorReset() {
+	c := k.GetCard(&Position{k.Cursor.Row, k.Cursor.Col})
+	if c == nil {
+		k.Cursor.Col = k.LastCol(k.Cursor.Row)
+	}
+}
+
 func (k *Klondike) GetCard(p *Position) *Card {
-	if len(k.Table[p.Row]) <= 0 {
+	length := len(k.Table[p.Row])
+	if length <= 0 || length-1 < p.Col {
 		return nil
 	}
 	return k.Table[p.Row][p.Col]
+}
+
+func (p *Position) Equal(target *Position) bool {
+	if p.Row == target.Row && p.Col == target.Col {
+		return true
+	}
+	return false
 }

@@ -32,6 +32,9 @@ func (k *Klondike) Move() error {
 	case isWaste(fromRow) && isColumn(toRow):
 		// 捨て札を場札に
 		err = k.MoveToColumn(k.Selected, k.Cursor)
+	case k.Selected.Equal(k.Cursor) && (isWaste(fromRow) || isColumn(fromRow)):
+		// 組札に出せたら出す
+		err = k.SearchAndMoveToFoundation(k.Selected, k.Cursor)
 	case isColumn(fromRow) && isColumn(toRow):
 		// 場札から場札に
 		err = k.MoveToColumn(k.Selected, k.Cursor)
@@ -40,6 +43,7 @@ func (k *Klondike) Move() error {
 		err = k.MoveToFoundation(k.Selected, k.Cursor)
 	}
 
+	k.CursorReset()
 	k.Selected = nil
 
 	return err
@@ -69,9 +73,6 @@ func (k *Klondike) Draw() error {
 	k.Table[stock][last].Open = true
 	k.Table[waste] = append(k.Table[waste], k.Table[stock][last])
 	k.Table[stock] = k.Table[stock][:last]
-	if last > 0 {
-		k.Cursor.Col = last - 1
-	}
 	return nil
 }
 
@@ -156,6 +157,39 @@ func (k *Klondike) MoveToColumn(from, to *Position) error {
 	// オープン
 	if len(k.Table[from.Row]) > 0 {
 		k.Table[from.Row][from.Col-1].Open = true
+	}
+	return nil
+}
+
+func (k *Klondike) SearchAndMoveToFoundation(p1, p2 *Position) error {
+	// 同じカード？
+	if !p1.Equal(p2) {
+		return InvalidMovement
+	}
+	// 捨て札か場札
+	if !isWaste(p1.Row) && !isColumn(p1.Row) {
+		return InvalidMovement
+	}
+	// 一番上？
+	if p1.Col != k.LastCol(p1.Row) {
+		return CardIsNotLastCol
+	}
+	// カード取得
+	c := k.GetCard(p1)
+	if c == nil {
+		return CardIsNotExist
+	}
+	// オープンか？
+	if !c.Open {
+		return CardIsNotOpen
+	}
+	// 移動先組札の検索
+	for i := foundation1; i <= foundation4; i++ {
+		to := &Position{i, k.LastCol(i)}
+		c2 := k.GetCard(to)
+		if c.CanPutInFoundation(c2) {
+			return k.MoveToFoundation(p1, to)
+		}
 	}
 	return nil
 }

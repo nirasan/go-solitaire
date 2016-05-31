@@ -101,6 +101,8 @@ Loop:
 				k.CursorLeft()
 			case termbox.KeyArrowRight:
 				k.CursorRight()
+			case termbox.KeyTab:
+				k.CursorJump()
 			}
 			draw()
 		}
