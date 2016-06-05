@@ -38,6 +38,8 @@ func main() {
 	switch *rendererString {
 	case "basic":
 		r = renderer.NewBasicRenderer(k, *colorFlag, *debugFlag)
+	case "ls":
+		r = renderer.NewLsRenderer(k, *colorFlag, *debugFlag)
 	case "simple":
 		r = renderer.NewSimpleRenderer(k, *colorFlag)
 	}
