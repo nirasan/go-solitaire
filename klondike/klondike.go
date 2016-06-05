@@ -222,3 +222,12 @@ func (p *Position) Equal(target *Position) bool {
 	}
 	return false
 }
+
+func (k *Klondike) IsClear() bool {
+	for i := foundation1; i <= foundation4; i++ {
+		if len(k.Table[i]) < 13 {
+			return false
+		}
+	}
+	return true
+}

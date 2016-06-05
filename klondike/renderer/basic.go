@@ -36,6 +36,17 @@ func (r *BasicRenderer) pos(x, y int) (int, int) {
 func (r *BasicRenderer) Render() {
 	termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
 
+	if r.k.IsClear() {
+		r.RenderClear()
+	} else {
+		r.RenderGame()
+		r.RenderDebug()
+	}
+
+	termbox.Flush()
+}
+
+func (r *BasicRenderer) RenderGame() {
 	// 場札
 	r.renderLastCard(0, 0, 0)
 
@@ -56,7 +67,15 @@ func (r *BasicRenderer) Render() {
 	r.renderColumn(10)
 	r.renderColumn(11)
 	r.renderColumn(12)
+}
 
+func (r *BasicRenderer) RenderClear() {
+	drawStringDefault(0, 0, "GAME CLEAR")
+	drawStringDefault(0, 1, fmt.Sprintf("SCORE: %d", r.k.Score))
+	termbox.HideCursor()
+}
+
+func (r *BasicRenderer) RenderDebug() {
 	// エラー
 	if r.err != nil {
 		drawStringDefault(45, 0, r.err.Error())
@@ -68,8 +87,6 @@ func (r *BasicRenderer) Render() {
 	for i, s := range debugStrings {
 		drawStringDefault(45, debugRow+i, s)
 	}
-
-	termbox.Flush()
 }
 
 func (r *BasicRenderer) renderLastCard(row, x, y int) {
