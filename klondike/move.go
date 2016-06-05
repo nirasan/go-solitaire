@@ -2,6 +2,7 @@ package klondike
 
 import (
 	"errors"
+	"math"
 )
 
 var (
@@ -84,6 +85,8 @@ func (k *Klondike) WasteToStock() error {
 	for _, c := range k.Table[stock] {
 		c.Open = false
 	}
+	// スコア反映
+	k.Score = int(math.Max(0, float64(k.Score-100)))
 	return nil
 }
 
@@ -113,6 +116,8 @@ func (k *Klondike) MoveToFoundation(from, to *Position) error {
 	// 移動実行
 	k.Table[to.Row] = append(k.Table[to.Row], fromCard)
 	k.Table[from.Row] = k.Table[from.Row][:from.Col]
+	// スコア反映
+	k.Score += 10
 	// オープン
 	if len(k.Table[from.Row]) > 0 {
 		k.Table[from.Row][from.Col-1].Open = true
@@ -154,6 +159,8 @@ func (k *Klondike) MoveToColumn(from, to *Position) error {
 	// 移動実行
 	k.Table[to.Row] = append(k.Table[to.Row], k.Table[from.Row][from.Col:]...)
 	k.Table[from.Row] = k.Table[from.Row][:from.Col]
+	// スコア反映
+	k.Score += 5
 	// オープン
 	if len(k.Table[from.Row]) > 0 {
 		k.Table[from.Row][from.Col-1].Open = true

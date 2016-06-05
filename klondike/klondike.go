@@ -13,6 +13,7 @@ type Klondike struct {
 	Table    []Cards
 	Cursor   *Position
 	Selected *Position
+	Score    int
 }
 
 type Position struct {
@@ -43,6 +44,7 @@ func NewKlondike() *Klondike {
 		Table:    make([]Cards, cardsListMax, cardsListMax),
 		Cursor:   &Position{0, 0},
 		Selected: nil,
+		Score:    0,
 	}
 }
 
@@ -68,6 +70,7 @@ func (k *Klondike) String() string {
 	} else {
 		strs = append(strs, fmt.Sprintf("Selected: %d, %d", k.Selected.Col, k.Selected.Row))
 	}
+	strs = append(strs, fmt.Sprintf("Score: %d", k.Score))
 	return strings.Join(strs, "\n")
 }
 
