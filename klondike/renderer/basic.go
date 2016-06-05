@@ -17,11 +17,12 @@ const (
 type BasicRenderer struct {
 	k         *klondike.Klondike
 	colorFlag bool
+	debugFlag bool
 	err       error
 }
 
-func NewBasicRenderer(k *klondike.Klondike, c bool) *BasicRenderer {
-	return &BasicRenderer{k, c, nil}
+func NewBasicRenderer(k *klondike.Klondike, c bool, d bool) *BasicRenderer {
+	return &BasicRenderer{k, c, d, nil}
 }
 
 func (r *BasicRenderer) SetError(e error) {
@@ -40,6 +41,8 @@ func (r *BasicRenderer) Render() {
 		r.RenderClear()
 	} else {
 		r.RenderGame()
+	}
+	if r.debugFlag {
 		r.RenderDebug()
 	}
 
