@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	keyboard "github.com/jteeuwen/keyboard/termbox"
-	"github.com/nirasan/solitaire/klondike"
-	"github.com/nirasan/solitaire/klondike/renderer"
+	"github.com/nirasan/go-solitaire/klondike"
+	"github.com/nirasan/go-solitaire/klondike/renderer"
 	"github.com/nsf/termbox-go"
 )
 
@@ -17,7 +17,7 @@ var (
 	k              *klondike.Klondike
 	colorFlag      = flag.Bool("color", true, "draw color charactor")
 	debugFlag      = flag.Bool("debug", false, "show debug")
-	rendererString = flag.String("renderer", "basic", "termbox renderer")
+	rendererString = flag.String("mode", "basic", "termbox renderer")
 	r              Renderer
 )
 

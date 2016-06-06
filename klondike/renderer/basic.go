@@ -2,7 +2,7 @@ package renderer
 
 import (
 	"fmt"
-	"github.com/nirasan/solitaire/klondike"
+	"github.com/nirasan/go-solitaire/klondike"
 	"github.com/nsf/termbox-go"
 	"strings"
 )

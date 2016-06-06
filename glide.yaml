@@ -1,4 +1,4 @@
-package: github.com/nirasan/solitaire
+package: github.com/nirasan/go-solitaire
 import:
 - package: github.com/nsf/termbox-go
 - package: github.com/mattn/go-runewidth
