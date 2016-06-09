@@ -138,12 +138,15 @@ func (r *LsRenderer) renderColumn(row, y int) {
 
 func (r *LsRenderer) renderCard(row, col, x, y int) {
 	str := lsCardEmpty
-	color := colorBlack
+	color := termbox.ColorDefault
+	if r.colorFlag {
+		color = colorBlack
+	}
 	if len(r.k.Table[row]) > 0 {
 		card := r.k.Table[row][col]
 		if card.Open {
 			str = fmt.Sprintf(lsCardFormat, card.Suit.String(), card.Num)
-			if card.Suit == klondike.Hearts || card.Suit == klondike.Diamonds {
+			if r.colorFlag && (card.Suit == klondike.Hearts || card.Suit == klondike.Diamonds) {
 				color = colorRed
 			}
 		} else {
