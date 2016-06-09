@@ -15,9 +15,9 @@ type Renderer interface {
 
 var (
 	k              *klondike.Klondike
-	colorFlag      = flag.Bool("color", true, "draw color charactor")
+	rendererString = flag.String("mode", "basic", "execute mode \"basic\" or \"ls\"")
+	colorFlag      = flag.Bool("color", true, "render color")
 	debugFlag      = flag.Bool("debug", false, "show debug")
-	rendererString = flag.String("mode", "basic", "termbox renderer")
 	r              Renderer
 )
 
